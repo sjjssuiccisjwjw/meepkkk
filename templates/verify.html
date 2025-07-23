@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Verificar Chave - UNITED HUB{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+        <div class="verify-card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i data-feather="key" class="verify-icon mb-3"></i>
+                    <h2 class="card-title mb-3">Verificar Chave</h2>
+                    <p class="text-muted">
+                        Digite sua chave de acesso para liberar os scripts premium
+                    </p>
+                </div>
+
+                <form method="POST" id="verifyForm">
+                    <div class="mb-4">
+                        <label for="key" class="form-label">Chave de Acesso</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-primary">
+                                <i data-feather="lock" class="text-primary"></i>
+                            </span>
+                            <input 
+                                type="text" 
+                                class="form-control form-control-lg border-primary" 
+                                id="key" 
+                                name="key" 
+                                placeholder="Digite sua chave aqui..."
+                                required
+                                autocomplete="off"
+                                style="text-transform: uppercase;"
+                            >
+                        </div>
+                        <div class="form-text text-muted">
+                            <i data-feather="info" class="me-1"></i>
+                            As chaves são sensíveis a maiúsculas e minúsculas
+                        </div>
+                    </div>
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg" id="verifyBtn">
+                            <span class="btn-text">
+                                <i data-feather="check" class="me-2"></i>
+                                Verificar Chave
+                            </span>
+                            <span class="btn-loading d-none">
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Verificando...
+                            </span>
+                        </button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-4">
+                    <hr class="my-4">
+                    <h6 class="mb-3">Não possui uma chave?</h6>
+                    <p class="text-muted small">
+                        Entre em contato com nossa equipe no Discord para obter acesso
+                    </p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#" class="btn btn-outline-primary btn-sm">
+                            <i data-feather="message-circle" class="me-1"></i>
+                            Discord
+                        </a>
+                        <a href="#" class="btn btn-outline-secondary btn-sm">
+                            <i data-feather="help-circle" class="me-1"></i>
+                            Suporte
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Help Section -->
+        <div class="help-section mt-4">
+            <div class="card bg-dark border-info">
+                <div class="card-body">
+                    <h6 class="card-title text-info mb-3">
+                        <i data-feather="help-circle" class="me-2"></i>
+                        Como obter uma chave?
+                    </h6>
+                    <ul class="list-unstyled small text-muted">
+                        <li class="mb-2">
+                            <i data-feather="arrow-right" class="me-2 text-info"></i>
+                            Participe do nosso servidor Discord
+                        </li>
+                        <li class="mb-2">
+                            <i data-feather="arrow-right" class="me-2 text-info"></i>
+                            Siga as regras e seja ativo na comunidade
+                        </li>
+                        <li class="mb-2">
+                            <i data-feather="arrow-right" class="me-2 text-info"></i>
+                            Solicite uma chave nos canais apropriados
+                        </li>
+                        <li>
+                            <i data-feather="arrow-right" class="me-2 text-info"></i>
+                            Aguarde a aprovação da equipe
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('verifyForm').addEventListener('submit', function(e) {
+        const btn = document.getElementById('verifyBtn');
+        const btnText = btn.querySelector('.btn-text');
+        const btnLoading = btn.querySelector('.btn-loading');
+        
+        // Show loading state
+        btnText.classList.add('d-none');
+        btnLoading.classList.remove('d-none');
+        btn.disabled = true;
+        
+        // Auto-convert to uppercase
+        const keyInput = document.getElementById('key');
+        keyInput.value = keyInput.value.toUpperCase();
+    });
+
+    // Auto-convert to uppercase while typing
+    document.getElementById('key').addEventListener('input', function(e) {
+        e.target.value = e.target.value.toUpperCase();
+    });
+
+    // Add some visual feedback
+    document.getElementById('key').addEventListener('focus', function(e) {
+        e.target.parentElement.style.transform = 'scale(1.02)';
+    });
+
+    document.getElementById('key').addEventListener('blur', function(e) {
+        e.target.parentElement.style.transform = 'scale(1)';
+    });
+</script>
+{% endblock %}

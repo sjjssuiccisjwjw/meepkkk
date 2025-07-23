@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - UNITED HUB{% endblock %}
+
+{% block content %}
+<div class="admin-header text-center mb-5">
+    <h1 class="display-5 fw-bold mb-3">
+        <i data-feather="settings" class="me-3"></i>
+        Painel Administrativo
+    </h1>
+    <p class="lead text-muted">
+        Gerencie chaves e monitore acessos ao sistema
+    </p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row mb-5">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="card-body text-center">
+                <i data-feather="key" class="stat-icon text-primary"></i>
+                <h3 class="mt-3">{{ total_keys }}</h3>
+                <p class="text-muted">Total de Chaves</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="card-body text-center">
+                <i data-feather="check-circle" class="stat-icon text-success"></i>
+                <h3 class="mt-3">{{ active_keys }}</h3>
+                <p class="text-muted">Chaves Ativas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="card-body text-center">
+                <i data-feather="users" class="stat-icon text-info"></i>
+                <h3 class="mt-3">{{ logs|length }}</h3>
+                <p class="text-muted">Acessos Recentes</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="card-body text-center">
+                <i data-feather="activity" class="stat-icon text-warning"></i>
+                <h3 class="mt-3">99.9%</h3>
+                <p class="text-muted">Uptime</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Key Generation Section -->
+<div class="admin-section mb-5">
+    <div class="card bg-dark border-primary">
+        <div class="card-header border-bottom border-primary">
+            <h5 class="mb-0">
+                <i data-feather="plus-circle" class="me-2"></i>
+                Gerar Nova Chave
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ url_for('generate_key') }}" id="generateKeyForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="description" class="form-label">Descrição</label>
+                        <input type="text" class="form-control" id="description" name="description" 
+                               placeholder="Ex: Chave para usuário premium">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="max_usage" class="form-label">Uso Máximo</label>
+                        <input type="number" class="form-control" id="max_usage" name="max_usage" 
+                               placeholder="Deixe vazio para ilimitado">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="expires_days" class="form-label">Expira em (dias)</label>
+                        <input type="number" class="form-control" id="expires_days" name="expires_days" 
+                               placeholder="Deixe vazio para nunca">
+                    </div>
+                </div>
+                <div class="d-grid d-md-flex justify-content-md-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i data-feather="key" class="me-2"></i>
+                        Gerar Chave
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Access Logs Section -->
+<div class="admin-section">
+    <div class="card bg-dark border-secondary">
+        <div class="card-header border-bottom border-secondary">
+            <h5 class="mb-0">
+                <i data-feather="activity" class="me-2"></i>
+                Logs de Acesso Recentes
+            </h5>
+        </div>
+        <div class="card-body">
+            {% if logs %}
+            <div class="table-responsive">
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <tr>
+                            <th>IP</th>
+                            <th>Localização</th>
+                            <th>Dispositivo</th>
+                            <th>Script</th>
+                            <th>Chave</th>
+                            <th>Status</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for log in logs %}
+                        <tr>
+                            <td>
+                                <code class="text-info">{{ log.ip_address }}</code>
+                            </td>
+                            <td>
+                                {% if log.location_data %}
+                                    {% set location = log.location_data | fromjson %}
+                                    <small class="text-muted">{{ location.formatted_location or 'N/A' }}</small>
+                                {% else %}
+                                    <small class="text-muted">N/A</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.device_info %}
+                                    {% set device = log.device_info | fromjson %}
+                                    <small class="text-muted">{{ device.device_type or 'N/A' }}</small>
+                                {% else %}
+                                    <small class="text-muted">N/A</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.accessed_script %}
+                                    <span class="badge bg-info">{{ log.accessed_script }}</span>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.key_used %}
+                                    <code class="text-warning">{{ log.key_used[:8] }}...</code>
+                                {% else %}
+                                    <span class="text-muted">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if log.success %}
+                                    <span class="badge bg-success">
+                                        <i data-feather="check" style="width: 12px; height: 12px;"></i>
+                                        Sucesso
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger">
+                                        <i data-feather="x" style="width: 12px; height: 12px;"></i>
+                                        Falha
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">
+                                    {{ log.timestamp.strftime('%d/%m/%Y %H:%M') }}
+                                </small>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i data-feather="inbox" class="mb-3" style="width: 48px; height: 48px;" stroke="#6c757d"></i>
+                <p class="text-muted">Nenhum log de acesso encontrado</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-refresh logs every 30 seconds
+setInterval(function() {
+    location.reload();
+}, 30000);
+
+// Add confirmation to key generation
+document.getElementById('generateKeyForm').addEventListener('submit', function(e) {
+    if (!confirm('Tem certeza que deseja gerar uma nova chave?')) {
+        e.preventDefault();
+    }
+});
+
+// Add some visual feedback to stat cards
+document.querySelectorAll('.stat-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px)';
+        this.style.boxShadow = '0 6px 20px rgba(0, 123, 255, 0.2)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '';
+    });
+});
+
+// Initialize tooltips for truncated data
+document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => {
+    new bootstrap.Tooltip(el);
+});
+</script>
+{% endblock %}

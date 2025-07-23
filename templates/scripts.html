@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+
+{% block title %}Scripts - UNITED HUB{% endblock %}
+
+{% block content %}
+<div class="scripts-header text-center mb-5">
+    <h1 class="display-5 fw-bold mb-3">
+        <i data-feather="code" class="me-3"></i>
+        Scripts MeepCity
+    </h1>
+    <p class="lead text-muted">
+        Acesse nossa coleção completa de scripts premium para MeepCity
+    </p>
+</div>
+
+<div class="scripts-categories">
+    {% for category_key, category in scripts.items() %}
+    <div class="category-section mb-5">
+        <div class="category-header mb-4">
+            <h3 class="category-title">
+                {% if category_key == 'admin_commands' %}
+                    <i data-feather="terminal" class="me-2 text-primary"></i>
+                {% elif category_key == 'gui_scripts' %}
+                    <i data-feather="monitor" class="me-2 text-success"></i>
+                {% elif category_key == 'troll_scripts' %}
+                    <i data-feather="smile" class="me-2 text-warning"></i>
+                {% elif category_key == 'free_features' %}
+                    <i data-feather="gift" class="me-2 text-info"></i>
+                {% endif %}
+                {{ category.name }}
+            </h3>
+            <p class="category-description text-muted">{{ category.description }}</p>
+        </div>
+
+        <div class="row">
+            {% for script in category.scripts %}
+            <div class="col-lg-6 col-xl-4 mb-4">
+                <div class="script-card h-100" data-category="{{ category_key }}" data-script="{{ loop.index0 }}">
+                    <div class="card-body">
+                        <div class="script-header mb-3">
+                            <h5 class="script-title mb-2">{{ script.name }}</h5>
+                            <small class="text-muted">por {{ script.author }}</small>
+                        </div>
+                        
+                        <p class="script-description text-muted mb-3">
+                            {{ script.description }}
+                        </p>
+                        
+                        <div class="script-features mb-3">
+                            <h6 class="features-title mb-2">Recursos:</h6>
+                            <div class="features-list">
+                                {% for feature in script.features[:3] %}
+                                <span class="feature-badge">{{ feature }}</span>
+                                {% endfor %}
+                                {% if script.features|length > 3 %}
+                                <span class="feature-badge more-features">+{{ script.features|length - 3 }} mais</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="script-actions">
+                            <button class="btn btn-primary btn-sm me-2" onclick="viewScript('{{ category_key }}', {{ loop.index0 }})">
+                                <i data-feather="eye" class="me-1"></i>
+                                Ver Script
+                            </button>
+                            <button class="btn btn-outline-success btn-sm" onclick="copyScript('{{ category_key }}', {{ loop.index0 }})">
+                                <i data-feather="copy" class="me-1"></i>
+                                Copiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Script Modal -->
+<div class="modal fade" id="scriptModal" tabindex="-1" aria-labelledby="scriptModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark border-primary">
+            <div class="modal-header border-bottom border-primary">
+                <h5 class="modal-title" id="scriptModalLabel">
+                    <i data-feather="code" class="me-2"></i>
+                    <span id="scriptModalTitle">Script</span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="scriptContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Carregando...</span>
+                        </div>
+                        <p class="mt-2 text-muted">Carregando script...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-primary">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-success" id="copyScriptBtn">
+                    <i data-feather="copy" class="me-1"></i>
+                    Copiar Script
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Instructions Modal -->
+<div class="instructions-panel">
+    <div class="card bg-dark border-info">
+        <div class="card-body">
+            <h6 class="card-title text-info mb-3">
+                <i data-feather="info" class="me-2"></i>
+                Como usar os scripts
+            </h6>
+            <ol class="list-styled small text-muted">
+                <li class="mb-2">Abra seu executor favorito (Synapse, KRNL, etc.)</li>
+                <li class="mb-2">Copie o código do script desejado</li>
+                <li class="mb-2">Cole no executor e execute</li>
+                <li>Aproveite as funcionalidades!</li>
+            </ol>
+            
+            <div class="alert alert-warning mt-3" role="alert">
+                <i data-feather="alert-triangle" class="me-2"></i>
+                <small>
+                    <strong>Importante:</strong> Use apenas em servidores privados ou com permissão. 
+                    O uso em servidores públicos pode resultar em ban.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentScriptData = null;
+
+async function viewScript(category, scriptId) {
+    const modal = new bootstrap.Modal(document.getElementById('scriptModal'));
+    const modalTitle = document.getElementById('scriptModalTitle');
+    const scriptContent = document.getElementById('scriptContent');
+    
+    // Show loading
+    scriptContent.innerHTML = `
+        <div class="text-center py-4">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+            <p class="mt-2 text-muted">Carregando script...</p>
+        </div>
+    `;
+    
+    modal.show();
+    
+    try {
+        const response = await fetch(`/script/${category}/${scriptId}`);
+        
+        if (!response.ok) {
+            throw new Error('Erro ao carregar script');
+        }
+        
+        const scriptData = await response.json();
+        currentScriptData = scriptData;
+        
+        modalTitle.textContent = scriptData.name;
+        
+        scriptContent.innerHTML = `
+            <div class="script-info mb-4">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h6 class="mb-2">${scriptData.name}</h6>
+                        <p class="text-muted small mb-2">${scriptData.description}</p>
+                        <small class="text-info">Autor: ${scriptData.author}</small>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <span class="badge bg-success">Disponível</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features-section mb-4">
+                <h6 class="mb-2">Recursos:</h6>
+                <div class="features-grid">
+                    ${scriptData.features.map(feature => 
+                        `<span class="feature-badge">${feature}</span>`
+                    ).join('')}
+                </div>
+            </div>
+            
+            <div class="script-code-section">
+                <h6 class="mb-2">Código do Script:</h6>
+                <div class="code-container">
+                    <pre class="code-block"><code>${scriptData.url}</code></pre>
+                    <button class="copy-code-btn" onclick="copyToClipboard('${scriptData.url.replace(/'/g, "\\'")}')">
+                        <i data-feather="copy"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-3" role="alert">
+                <i data-feather="info" class="me-2"></i>
+                <small>
+                    Copie este código e execute no seu executor favorito dentro do MeepCity.
+                </small>
+            </div>
+        `;
+        
+        // Re-initialize Feather icons
+        feather.replace();
+        
+    } catch (error) {
+        scriptContent.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <i data-feather="alert-circle" class="me-2"></i>
+                Erro ao carregar o script. Tente novamente.
+            </div>
+        `;
+        feather.replace();
+    }
+}
+
+async function copyScript(category, scriptId) {
+    try {
+        const response = await fetch(`/script/${category}/${scriptId}`);
+        const scriptData = await response.json();
+        
+        await copyToClipboard(scriptData.url);
+        
+        // Show success feedback
+        showToast('Script copiado!', 'success');
+        
+    } catch (error) {
+        showToast('Erro ao copiar script', 'error');
+    }
+}
+
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        return true;
+    } catch (err) {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        return true;
+    }
+}
+
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `toast align-items-center text-white bg-${type === 'error' ? 'danger' : 'success'} border-0`;
+    toast.setAttribute('role', 'alert');
+    toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">
+                <i data-feather="${type === 'error' ? 'alert-circle' : 'check-circle'}" class="me-2"></i>
+                ${message}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    `;
+    
+    // Add to page
+    let toastContainer = document.querySelector('.toast-container');
+    if (!toastContainer) {
+        toastContainer = document.createElement('div');
+        toastContainer.className = 'toast-container position-fixed bottom-0 end-0 p-3';
+        document.body.appendChild(toastContainer);
+    }
+    
+    toastContainer.appendChild(toast);
+    
+    const bsToast = new bootstrap.Toast(toast);
+    bsToast.show();
+    
+    feather.replace();
+    
+    // Remove toast after it hides
+    toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+    });
+}
+
+// Copy script button in modal
+document.getElementById('copyScriptBtn').addEventListener('click', function() {
+    if (currentScriptData) {
+        copyToClipboard(currentScriptData.url);
+        showToast('Script copiado para a área de transferência!', 'success');
+    }
+});
+
+// Add hover effects to script cards
+document.querySelectorAll('.script-card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-5px)';
+        this.style.boxShadow = '0 8px 25px rgba(0, 123, 255, 0.3)';
+    });
+    
+    card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = '';
+    });
+});
+</script>
+{% endblock %}
