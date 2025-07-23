@@ -1,0 +1,385 @@
+/* Custom CSS for UNITED HUB */
+
+/* Base Styles */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6f42c1;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --info-color: #17a2b8;
+    --dark-color: #121212;
+    --darker-color: #0d0d0d;
+    --light-gray: #2d2d2d;
+    --border-color: #404040;
+}
+
+body {
+    background-color: var(--dark-color);
+    color: #ffffff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Hero Section */
+.hero-section {
+    padding: 4rem 0;
+    background: linear-gradient(135deg, rgba(0, 123, 255, 0.1), rgba(111, 66, 193, 0.1));
+    border-radius: 15px;
+    margin-bottom: 3rem;
+}
+
+.hero-icon {
+    font-size: 4rem;
+    color: var(--primary-color);
+}
+
+/* Feature Cards */
+.feature-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.feature-card:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+}
+
+.feature-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
+
+/* Script Cards */
+.script-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.script-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0, 123, 255, 0.3);
+}
+
+.script-title {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.script-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Feature Badges */
+.feature-badge {
+    display: inline-block;
+    background: rgba(0, 123, 255, 0.2);
+    color: var(--primary-color);
+    padding: 0.2rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    margin: 0.1rem;
+    border: 1px solid rgba(0, 123, 255, 0.3);
+}
+
+.more-features {
+    background: rgba(108, 117, 125, 0.2);
+    color: #6c757d;
+    border-color: rgba(108, 117, 125, 0.3);
+}
+
+/* Category Sections */
+.category-title {
+    color: #ffffff;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.category-description {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Verify Card */
+.verify-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.verify-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+}
+
+/* Custom Form Styles */
+.form-control {
+    background-color: var(--light-gray);
+    border-color: var(--border-color);
+    color: #ffffff;
+}
+
+.form-control:focus {
+    background-color: var(--light-gray);
+    border-color: var(--primary-color);
+    color: #ffffff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.input-group-text {
+    background-color: var(--light-gray);
+    border-color: var(--border-color);
+    color: #ffffff;
+}
+
+/* Button Styles */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.4);
+}
+
+.btn-outline-primary {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Stats Section */
+.stats-section {
+    padding: 3rem 0;
+    background: rgba(0, 123, 255, 0.05);
+    border-radius: 15px;
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+/* Admin Styles */
+.stat-card {
+    background: var(--light-gray);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.stat-icon {
+    font-size: 2rem;
+}
+
+.admin-section {
+    margin-bottom: 2rem;
+}
+
+/* Code Styles */
+.code-container {
+    position: relative;
+    background: var(--darker-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.code-block {
+    background: transparent;
+    color: #e6db74;
+    margin: 0;
+    padding: 0;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.copy-code-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--primary-color);
+    border: none;
+    border-radius: 6px;
+    padding: 0.3rem;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.copy-code-btn:hover {
+    background: var(--secondary-color);
+    transform: scale(1.1);
+}
+
+/* Modal Styles */
+.modal-content {
+    background-color: var(--light-gray);
+    border: 1px solid var(--border-color);
+}
+
+.modal-header, .modal-footer {
+    border-color: var(--border-color);
+}
+
+/* Help Section */
+.help-section .card {
+    background: rgba(23, 162, 184, 0.1);
+    border-color: rgba(23, 162, 184, 0.3);
+}
+
+/* Instructions Panel */
+.instructions-panel {
+    position: sticky;
+    top: 2rem;
+    margin-top: 2rem;
+}
+
+/* Table Styles */
+.table-dark {
+    background-color: var(--light-gray);
+}
+
+.table-dark td {
+    border-color: var(--border-color);
+    vertical-align: middle;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 2rem 0;
+    }
+    
+    .hero-icon {
+        font-size: 3rem;
+    }
+    
+    .display-4 {
+        font-size: 2.5rem;
+    }
+    
+    .feature-icon {
+        font-size: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+    }
+}
+
+/* Animation Classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(-20px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+/* Loading States */
+.btn-loading .spinner-border {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--dark-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Toast Styles */
+.toast {
+    backdrop-filter: blur(10px);
+}
+
+/* Focus Styles */
+.form-control:focus,
+.btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Badge Styles */
+.badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 0.6rem;
+}
+
+/* Alert Styles */
+.alert {
+    border-radius: 10px;
+}
+
+.alert-warning {
+    background-color: rgba(255, 193, 7, 0.1);
+    border-color: rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+}
+
+.alert-info {
+    background-color: rgba(23, 162, 184, 0.1);
+    border-color: rgba(23, 162, 184, 0.3);
+    color: #17a2b8;
+}
+
+.alert-success {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-color: rgba(40, 167, 69, 0.3);
+    color: #28a745;
+}
+
+.alert-danger {
+    background-color: rgba(220, 53, 69, 0.1);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #dc3545;
+}
