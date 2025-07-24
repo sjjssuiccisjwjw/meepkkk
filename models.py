@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
-from app import db
+from extensions import db
 
 class PrivateKey(db.Model):
     __tablename__ = 'private_keys'
